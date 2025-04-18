@@ -1,25 +1,29 @@
 module "sg" {
-  source      = "../modules/sg"
+  #source      = "../modules/sg"
+  source      = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/sg?ref=main"
   sg_name     = "Frontend-Security"
   vpc_id      = data.terraform_remote_state.backend.outputs.vpc_id
   allow_ports = [80, 443]
 }
 
 module "s3" {
-  source      = "../modules/bucket"
+  #source      = "../modules/bucket"
+  source      = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/bucket?ref=main"
   bucket_name = "frontend-created-bucket-789"
   #index_key   = "index.html"
   #index_path  = "./index.html"
 }
 
 module "ecr" {
-  source        = "../modules/ecr"
+  #source        = "../modules/ecr"
+  source        = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/ecr?ref=main"
   ecr_repo_name = "frontend"
   frontend_path = "../../docker"
 }
 
 module "lb" {
-  source  = "../modules/lb"
+  #source  = "../modules/lb"
+  source  = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/lb?ref=main"
   lb_name = "Front-load-balancer"
 
   vpc_id            = data.terraform_remote_state.backend.outputs.vpc_id
@@ -31,7 +35,8 @@ module "lb" {
 }
 
 module "ecs" {
-  source                  = "../modules/ecs"
+  #source                  = "../modules/ecs"
+  source                  = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/ecs?ref=main"
   frontend_container_name = "Frontend-container"
   frontend_ecr_url        = module.ecr.frontend_ecr_url
   bucket_name             = module.s3.bucket_name
@@ -41,7 +46,8 @@ module "ecs" {
 }
 
 module "service" {
-  source                  = "../modules/service"
+  #source                  = "../modules/service"
+  source                  = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/service?ref=main"
   frontend_service_name   = "Frontend"
   frontend_container_name = module.ecs.frontend_container_name
   ecs_cluster_id          = data.terraform_remote_state.backend.outputs.ecs_cluster_id
@@ -53,7 +59,8 @@ module "service" {
 }
 
 module "asg" {
-  source                = "../modules/asg"
+  #source                = "../modules/asg"
+  source                = "git::https://github.com/Hovhannisyan111/frontend.git//terraform/modules/asg?ref=main"
   cluster_name          = data.terraform_remote_state.backend.outputs.cluster_name #"ECS-cluster"
   frontend_service_name = module.service.frontend_service_name
   max_frontend_capacity = 2
