@@ -32,6 +32,11 @@
       margin-top: 1.5rem;
       color: #94a3b8;
     }
+    .time {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #cbd5e1;
+    }
   </style>
 </head>
 <body>
@@ -39,6 +44,17 @@
     <h1>🌐 Frontend Service</h1>
     <p>Welcome to the frontend powered by Nginx, deployed on AWS Fargate.</p>
     <div class="badge">Container Ready | Built for S3 Integration</div>
+    <div class="time" id="time">Loading current time...</div>
   </div>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeString = now.toLocaleString();
+      document.getElementById('time').textContent = 'Current Server Time: ' + timeString;
+    }
+    setInterval(updateTime, 1000);
+    updateTime(); // run immediately
+  </script>
 </body>
 </html>
